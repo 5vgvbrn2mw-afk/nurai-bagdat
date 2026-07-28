@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бағдат &amp; Нұрай — Үйлену тойы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF6EC;
+    --ivory:#F3E9D8;
+    --gold:#B8912F;
+    --gold-deep:#8C6A1F;
+    --gold-light:#D9BC7C;
+    --ink:#3B2E20;
+    --ink-soft:#6B5A44;
+    --blush:#EADFCB;
+    --glass:rgba(255,255,255,0.45);
+    --glass-border:rgba(184,145,47,0.35);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Montserrat',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+  .serif{font-family:'Playfair Display',serif;}
+
+  /* ---------- Ornament SVG pattern ---------- */
+  .ornament-line{
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    color:var(--gold);
+    margin:0 auto;
+  }
+  .ornament-line svg{width:28px;height:28px;flex-shrink:0;}
+  .ornament-line .rule{height:1px;width:60px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+
+  /* ---------- Floating music button ---------- */
+  .music-btn{
+    position:fixed; z-index:60; top:22px; right:22px;
+    width:52px; height:52px; border-radius:50%;
+    background:var(--glass); backdrop-filter:blur(12px);
+    border:1px solid var(--glass-border);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow:0 6px 20px rgba(140,106,31,0.18);
+    transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .music-btn:hover{transform:scale(1.08); box-shadow:0 10px 26px rgba(140,106,31,0.28);}
+  .music-btn svg{width:22px;height:22px;color:var(--gold-deep);}
+  .music-btn .bars{display:flex;gap:2px;align-items:flex-end;height:16px;}
+  .music-btn .bars span{width:3px;background:var(--gold-deep);border-radius:2px;animation:eq 0.9s ease-in-out infinite;}
+  .music-btn .bars span:nth-child(2){animation-delay:.15s;}
+  .music-btn .bars span:nth-child(3){animation-delay:.3s;}
+  .music-btn.paused .bars span{animation-play-state:paused; height:5px !important;}
+  @keyframes eq{0%,100%{height:5px;}50%{height:16px;}}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative; min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    padding:40px 24px;
+    background:
+      radial-gradient(circle at 50% 20%, rgba(217,188,124,0.35), transparent 60%),
+      linear-gradient(160deg, var(--cream) 0%, var(--ivory) 55%, var(--blush) 100%);
+    overflow:hidden;
+  }
+  .hero::before, .hero::after{
+    content:""; position:absolute; width:340px; height:340px;
+    border:1px solid rgba(184,145,47,0.25); border-radius:50%;
+  }
+  .hero::before{top:-140px; left:-120px;}
+  .hero::after{bottom:-160px; right:-130px;}
+
+  .hero-frame{
+    position:relative; width:min(72vw,340px); aspect-ratio:1/1;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:28px;
+  }
+  .hero-frame svg{position:absolute; inset:0; width:100%; height:100%;}
+  .hero-frame .ring{
+    stroke:var(--gold); fill:none; stroke-width:1.1;
+    stroke-dasharray:900; stroke-dashoffset:900;
+    animation:draw 2.6s ease forwards .3s;
+  }
+  .hero-frame .motif{
+    stroke:var(--gold-deep); fill:none; stroke-width:1;
+    opacity:0; animation:fadeIn 1.4s ease forwards 1.8s;
+  }
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  @keyframes fadeIn{to{opacity:1;}}
+
+  .monogram{
+    position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:6px;
+    opacity:0; animation:riseIn 1.2s ease forwards 1.4s;
+  }
+  .monogram .letters{
+    font-family:'Playfair Display',serif; font-style:italic; font-weight:600;
+    font-size:clamp(2.6rem,9vw,3.6rem); color:var(--gold-deep); line-height:1;
+  }
+  .monogram .amp{font-size:0.5em; color:var(--gold); vertical-align:middle; margin:0 6px;}
+
+  @keyframes riseIn{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);}}
+
+  .hero h1{
+    font-size:clamp(2.4rem,6.4vw,4.4rem); font-weight:600; letter-spacing:0.5px;
+    color:var(--ink); margin-bottom:18px;
+    opacity:0; animation:riseIn 1s ease forwards 0.4s;
+  }
+  .hero .amp{color:var(--gold); font-style:italic; margin:0 12px;}
+  .hero p.invite{
+    max-width:520px; font-size:clamp(1rem,2.2vw,1.2rem); line-height:1.7;
+    color:var(--ink-soft); font-weight:300; margin-bottom:36px;
+    opacity:0; animation:riseIn 1s ease forwards 0.7s;
+  }
+  .scroll-cue{
+    opacity:0; animation:riseIn 1s ease forwards 1.1s, bob 2.4s ease-in-out infinite 2.1s;
+    color:var(--gold-deep); font-size:0.75rem; letter-spacing:3px; text-transform:uppercase;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .scroll-cue .stem{width:1px; height:34px; background:linear-gradient(var(--gold),transparent);}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal{opacity:0; transform:translateY(36px); transition:opacity 1s ease, transform 1s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  section{padding:110px 24px; position:relative;}
+  .section-inner{max-width:900px; margin:0 auto; text-align:center;}
+  .eyebrow{
+    font-size:0.78rem; letter-spacing:4px; text-transform:uppercase; color:var(--gold-deep);
+    margin-bottom:18px; font-weight:500;
+  }
+  h2.title{font-size:clamp(1.9rem,4.2vw,2.8rem); font-weight:600; margin-bottom:26px; color:var(--ink);}
+
+  /* ---------- Countdown ---------- */
+  .countdown-wrap{background:linear-gradient(180deg, var(--ivory), var(--cream));}
+  .countdown{
+    display:flex; justify-content:center; gap:18px; flex-wrap:wrap; margin-top:40px;
+  }
+  .count-card{
+    background:var(--glass); backdrop-filter:blur(14px);
+    border:1px solid var(--glass-border); border-radius:18px;
+    padding:26px 22px; min-width:100px;
+    box-shadow:0 12px 34px rgba(140,106,31,0.12);
+  }
+  .count-card .num{font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,2.8rem); color:var(--gold-deep); font-weight:600;}
+  .count-card .lbl{font-size:0.72rem; letter-spacing:2px; text-transform:uppercase; color:var(--ink-soft); margin-top:6px;}
+  .countdown-done{
+    font-family:'Playfair Display',serif; font-style:italic; font-size:1.6rem; color:var(--gold-deep); margin-top:30px;
+  }
+
+  /* ---------- Event info ---------- */
+  .event-wrap{background:var(--cream);}
+  .event-card{
+    max-width:520px; margin:0 auto; background:var(--glass); backdrop-filter:blur(16px);
+    border:1px solid var(--glass-border); border-radius:26px; padding:52px 40px;
+    box-shadow:0 20px 50px rgba(140,106,31,0.14);
+  }
+  .event-row{display:flex; align-items:center; gap:16px; justify-content:center; margin-bottom:22px; font-size:1.05rem; color:var(--ink);}
+  .event-row .ic{font-size:1.3rem;}
+  .event-row b{font-weight:600;}
+  .map-btn{
+    display:inline-flex; align-items:center; gap:10px; margin-top:20px;
+    padding:15px 34px; border-radius:40px; border:1px solid var(--gold);
+    background:transparent; color:var(--gold-deep); font-family:'Montserrat',sans-serif;
+    font-size:0.92rem; letter-spacing:1px; text-decoration:none; font-weight:500;
+    transition:all .35s ease; cursor:pointer;
+  }
+  .map-btn:hover{background:var(--gold); color:#fff; box-shadow:0 10px 26px rgba(184,145,47,0.35);}
+
+  /* ---------- Gallery ---------- */
+  .gallery-wrap{background:linear-gradient(180deg, var(--cream), var(--blush));}
+  .gallery-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:44px;
+  }
+  .gal-frame{
+    aspect-ratio:3/4; border-radius:16px; position:relative; overflow:hidden;
+    background:linear-gradient(150deg,#EFE3CC,#DEC792 60%,#C9A853);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 14px 30px rgba(140,106,31,0.16);
+  }
+  .gal-frame:nth-child(2){aspect-ratio:1/1;}
+  .gal-frame::before{
+    content:""; position:absolute; inset:10px; border:1px solid rgba(255,255,255,0.55); border-radius:10px;
+  }
+  .gal-frame svg{width:34%; opacity:0.55; color:#fff;}
+  .gallery-note{margin-top:26px; font-size:0.85rem; color:var(--ink-soft); font-style:italic;}
+
+  /* ---------- RSVP ---------- */
+  .rsvp-wrap{background:var(--cream);}
+  .rsvp-card{
+    max-width:520px; margin:40px auto 0; background:var(--glass); backdrop-filter:blur(16px);
+    border:1px solid var(--glass-border); border-radius:26px; padding:48px 36px;
+    box-shadow:0 20px 50px rgba(140,106,31,0.14); text-align:left;
+  }
+  .field{margin-bottom:22px;}
+  .field label{display:block; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
+  .field input, .field select{
+    width:100%; padding:14px 16px; border-radius:12px; border:1px solid rgba(184,145,47,0.35);
+    background:rgba(255,255,255,0.6); font-family:'Montserrat',sans-serif; font-size:1rem; color:var(--ink);
+    outline:none; transition:border-color .3s, box-shadow .3s;
+  }
+  .field input:focus, .field select:focus{border-color:var(--gold); box-shadow:0 0 0 3px rgba(184,145,47,0.15);}
+  .submit-btn{
+    width:100%; padding:16px; border:none; border-radius:14px; cursor:pointer;
+    background:linear-gradient(135deg,var(--gold),var(--gold-deep)); color:#fff;
+    font-family:'Montserrat',sans-serif; font-size:0.95rem; letter-spacing:1px; font-weight:600;
+    box-shadow:0 12px 28px rgba(140,106,31,0.3); transition:transform .3s, box-shadow .3s;
+  }
+  .submit-btn:hover{transform:translateY(-2px); box-shadow:0 16px 34px rgba(140,106,31,0.4);}
+  .submit-btn:disabled{opacity:0.6; cursor:default; transform:none;}
+  .success-msg{
+    text-align:center; padding:20px 0 4px; font-family:'Playfair Display',serif; font-style:italic;
+    font-size:1.3rem; color:var(--gold-deep); display:none;
+  }
+  .success-msg.show{display:block; animation:riseIn .8s ease forwards;}
+  .error-msg{color:#a94442; font-size:0.85rem; margin-top:-12px; margin-bottom:16px; display:none;}
+
+  /* ---------- Thanks ---------- */
+  .thanks-wrap{
+    background:linear-gradient(160deg,var(--blush),var(--ivory));
+    text-align:center;
+  }
+  .thanks-wrap p{
+    max-width:640px; margin:0 auto; font-family:'Playfair Display',serif; font-style:italic;
+    font-size:clamp(1.2rem,2.6vw,1.6rem); line-height:1.8; color:var(--ink);
+  }
+
+  footer{padding:36px 24px; text-align:center; color:var(--ink-soft); font-size:0.8rem; letter-spacing:1px; background:var(--cream);}
+
+  /* ---------- Admin ---------- */
+  .admin-wrap{max-width:720px; margin:0 auto; text-align:left;}
+  .admin-stats{display:flex; gap:16px; margin-bottom:26px; flex-wrap:wrap;}
+  .admin-stats div{flex:1; min-width:140px; background:var(--glass); border:1px solid var(--glass-border); border-radius:16px; padding:20px; text-align:center;}
+  .admin-stats .n{font-family:'Playfair Display',serif; font-size:2rem; color:var(--gold-deep); font-weight:600;}
+  .admin-list{background:var(--glass); border:1px solid var(--glass-border); border-radius:16px; overflow:hidden;}
+  .admin-list table{width:100%; border-collapse:collapse;}
+  .admin-list th, .admin-list td{padding:12px 16px; text-align:left; border-bottom:1px solid rgba(184,145,47,0.2); font-size:0.9rem;}
+  .admin-list th{color:var(--gold-deep); text-transform:uppercase; font-size:0.72rem; letter-spacing:1px;}
+
+  @media (max-width:640px){
+    .gallery-grid{grid-template-columns:repeat(2,1fr);}
+    section{padding:80px 20px;}
+    .rsvp-card, .event-card{padding:36px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<audio id="bg-music" loop preload="none">
+  <!-- Место для вашей мелодии: замените src на ссылку на MP3-файл -->
+  <!-- <source src="your-music-file.mp3" type="audio/mpeg"> -->
+</audio>
+
+<button class="music-btn paused" id="musicBtn" aria-label="Музыканы қосу/өшіру">
+  <svg id="noteIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+  <div class="bars" id="eqBars" style="display:none;"><span></span><span></span><span></span></div>
+</button>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-frame">
+    <svg viewBox="0 0 300 300">
+      <circle class="ring" cx="150" cy="150" r="128"/>
+      <g class="motif">
+        <path d="M150 30 C160 50 140 55 150 70 C160 55 140 50 150 30 Z"/>
+        <path d="M150 270 C160 250 140 245 150 230 C160 245 140 250 150 270 Z"/>
+        <path d="M30 150 C50 140 55 160 70 150 C55 140 50 160 30 150 Z"/>
+        <path d="M270 150 C250 140 245 160 230 150 C245 140 250 160 270 150 Z"/>
+      </g>
+    </svg>
+    <div class="monogram">
+      <div class="letters">Б<span class="amp">&amp;</span>Н</div>
+    </div>
+  </div>
+
+  <h1>Бағдат<span class="amp">&amp;</span>Нұрай</h1>
+  <p class="invite">Сіздерді үйлену тойымыздың қадірлі қонағы болуға шақырамыз.</p>
+
+  <div class="scroll-cue">
+    <span>Төмен қарай</span>
+    <div class="stem"></div>
+  </div>
+</section>
+
+<!-- COUNTDOWN -->
+<section class="countdown-wrap">
+  <div class="section-inner reveal">
+    <div class="eyebrow">Той күніне дейін</div>
+    <h2 class="title">Асыға күтеміз</h2>
+    <div class="ornament-line">
+      <div class="rule"></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2c2 4-2 5 0 9c2-4-2-5 0-9Z"/><path d="M2 12c4-2 5 2 9 0c-4 2-5-2-9 0Z"/><path d="M22 12c-4-2-5 2-9 0c4 2 5-2 9 0Z"/><path d="M12 22c2-4-2-5 0-9c-2 4 2 5 0 9Z"/></svg>
+      <div class="rule"></div>
+    </div>
+    <div class="countdown" id="countdown"></div>
+  </div>
+</section>
+
+<!-- EVENT INFO -->
+<section class="event-wrap">
+  <div class="section-inner reveal">
+    <div class="eyebrow">Той туралы</div>
+    <h2 class="title">Мереке күні</h2>
+    <div class="event-card">
+      <div class="event-row"><span class="ic">📅</span><span><b>27.07.2026</b></span></div>
+      <div class="event-row"><span class="ic">🕕</span><span><b>18:00</b></span></div>
+      <div class="event-row"><span class="ic">📍</span><span>Аягөз қаласы, «Төре хан» мейрамханасы</span></div>
+      <a class="map-btn" id="mapBtn" href="https://www.google.com/maps/search/?api=1&query=%D0%A2%D3%A9%D1%80%D0%B5%20%D1%85%D0%B0%D0%BD%20%D0%BC%D0%B5%D0%B9%D1%80%D0%B0%D0%BC%D1%85%D0%B0%D0%BD%D0%B0%D1%81%D1%8B%20%D0%90%D1%8F%D0%B3%D3%A9%D0%B7" target="_blank" rel="noopener">Картадан ашу</a>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-wrap">
+  <div class="section-inner reveal">
+    <div class="eyebrow">Естеліктер</div>
+    <h2 class="title">Біздің сәттер</h2>
+    <div class="gallery-grid">
+      <div class="gal-frame"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 6.6L21 9l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.6 3 9l6.6-.4z"/></svg></div>
+      <div class="gal-frame"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-9.5-9C1 8.5 2.7 5 6 5c2 0 3.4 1 4.5 2.4C11.6 6 13 5 15 5c3.3 0 5 3.5 3.5 7-2.5 4.4-9.5 9-9.5 9z"/></svg></div>
+      <div class="gal-frame"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 6.6L21 9l-5 4.6L17.4 21 12 17.3 6.6 21 8 13.6 3 9l6.6-.4z"/></svg></div>
+    </div>
+    <div class="gallery-note">Бұл жерде сіздің шынайы фотосуреттеріңіз орналасады — оларды жіберсеңіз, галереяны толықтырамын.</div>
+  </div>
+</section>
+
+<!-- RSVP -->
+<section class="rsvp-wrap" id="rsvp">
+  <div class="section-inner reveal">
+    <div class="eyebrow">Қатысу</div>
+    <h2 class="title">Қатысуыңызды растаңыз</h2>
+
+    <form class="rsvp-card" id="rsvpForm">
+      <div class="field">
+        <label for="fullName">Аты-жөніңіз</label>
+        <input type="text" id="fullName" required placeholder="Аты-жөніңізді жазыңыз">
+      </div>
+      <div class="field">
+        <label for="guestCount">Неше адам келеді</label>
+        <select id="guestCount" required>
+          <option value="">Таңдаңыз</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="noteField">Ескерту (қаласаңыз)</label>
+        <input type="text" id="noteField" placeholder="Мысалы: балаларым бар">
+      </div>
+      <div class="error-msg" id="formError">Барлық өрістерді толтырыңыз.</div>
+      <button type="submit" class="submit-btn" id="submitBtn">Қатысуымды растаймын</button>
+      <div class="success-msg" id="successMsg">Рақмет! Сізді асыға күтеміз! ❤️</div>
+    </form>
+  </div>
+</section>
+
+<!-- THANKS -->
+<section class="thanks-wrap">
+  <div class="section-inner reveal">
+    <p>«Сіздермен бірге осы ерекше күнімізді бөлісу біз үшін үлкен қуаныш. Келулеріңізді асыға күтеміз!»</p>
+  </div>
+</section>
+
+<footer>Бағдат &amp; Нұрай · 27.07.2026</footer>
+
+<!-- ADMIN (hidden section, shown only with ?admin=tore2026 in URL) -->
+<section id="adminSection" style="display:none; background:var(--ivory);">
+  <div class="admin-wrap reveal in">
+    <div class="eyebrow">Қонақ басқару тақтасы</div>
+    <h2 class="title">Растаулар тізімі</h2>
+    <div class="admin-stats">
+      <div><div class="n" id="statResponses">0</div><div>Растаған қонақ</div></div>
+      <div><div class="n" id="statGuests">0</div><div>Жалпы адам саны</div></div>
+    </div>
+    <div class="admin-list">
+      <table>
+        <thead><tr><th>Аты-жөні</th><th>Адам саны</th><th>Ескерту</th><th>Уақыты</th></tr></thead>
+        <tbody id="adminTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<script>
+// ---------- Google Sheets connection ----------
+// 1) Google Sheets ашыңыз → Extensions → Apps Script.
+// 2) Төмендегі кодты сол жерге қойыңыз да, "Deploy" → "New deployment" → "Web app" →
+//    Execute as: Me, Who has access: Anyone таңдап Deploy басыңыз.
+// 3) Шыққан URL-ды төмендегі GAS_URL-ге қойыңыз.
+//
+// --- Apps Script коды (Google Sheets ішінде) ---
+// function doPost(e){
+//   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+//   const data = JSON.parse(e.postData.contents);
+//   sheet.appendRow([new Date(), data.name, data.guests, data.note]);
+//   return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+//     .setMimeType(ContentService.MimeType.JSON);
+// }
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwtSyY0DcAus88e8H72PCsrV8habr8arKveKmqSEqi1_L109JXINLgV_eoGa9ieXRA/exec';
+
+async function submitToSheet(entry){
+  if(!GAS_URL) return;
+  try{
+    await fetch(GAS_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(entry)
+    });
+  }catch(err){
+    console.error('Sheets submit error', err);
+  }
+}
+
+// ---------- Populate guest count select ----------
+const guestSelect = document.getElementById('guestCount');
+for(let i=1;i<=10;i++){
+  const o=document.createElement('option');
+  o.value=i; o.textContent = i + (i===1 ? ' адам' : ' адам');
+  guestSelect.appendChild(o);
+}
+
+// ---------- Scroll reveal ----------
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+},{threshold:0.15});
+revealEls.forEach(el=>io.observe(el));
+
+// ---------- Countdown ----------
+const target = new Date('2026-07-27T18:00:00+06:00').getTime();
+const countdownEl = document.getElementById('countdown');
+function renderCountdown(){
+  const now = Date.now();
+  const diff = target - now;
+  if(diff <= 0){
+    countdownEl.innerHTML = '<div class="countdown-done">Той күні келді! Сізді асыға күтеміз ❤️</div>';
+    return;
+  }
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor((diff%86400000)/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  const s = Math.floor((diff%60000)/1000);
+  countdownEl.innerHTML = [
+    [d,'Күн'],[h,'Сағат'],[m,'Минут'],[s,'Секунд']
+  ].map(([val,lbl])=>`<div class="count-card"><div class="num">${String(val).padStart(2,'0')}</div><div class="lbl">${lbl}</div></div>`).join('');
+}
+renderCountdown();
+setInterval(renderCountdown,1000);
+
+// ---------- Music toggle ----------
+const musicBtn = document.getElementById('musicBtn');
+const audio = document.getElementById('bg-music');
+const eqBars = document.getElementById('eqBars');
+const noteIcon = document.getElementById('noteIcon');
+let musicOn = false;
+musicBtn.addEventListener('click', ()=>{
+  musicOn = !musicOn;
+  if(musicOn){
+    audio.play().catch(()=>{ /* Дыбыс файлы қосылмаған болса, тыныш жалғастырамыз */ });
+    musicBtn.classList.remove('paused');
+    eqBars.style.display='flex'; noteIcon.style.display='none';
+  } else {
+    audio.pause();
+    musicBtn.classList.add('paused');
+    eqBars.style.display='none'; noteIcon.style.display='block';
+  }
+});
+
+// ---------- RSVP submit with persistent storage ----------
+const form = document.getElementById('rsvpForm');
+const submitBtn = document.getElementById('submitBtn');
+const successMsg = document.getElementById('successMsg');
+const formError = document.getElementById('formError');
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('fullName').value.trim();
+  const guests = document.getElementById('guestCount').value;
+  const note = document.getElementById('noteField').value.trim();
+  if(!name || !guests){
+    formError.style.display='block';
+    return;
+  }
+  formError.style.display='none';
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Жіберілуде...';
+
+  const entry = { name, guests: parseInt(guests,10), note, ts: new Date().toISOString() };
+
+  try{
+    const key = 'rsvp:' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+    await window.storage.set(key, JSON.stringify(entry), true);
+  }catch(err){
+    console.error('Storage error', err);
+  }
+
+  await submitToSheet(entry);
+
+  form.style.display='none';
+  successMsg.classList.add('show');
+});
+
+// ---------- Admin dashboard ----------
+async function loadAdmin(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('admin') !== 'tore2026') return;
+
+  document.getElementById('adminSection').style.display='block';
+  try{
+    const list = await window.storage.list('rsvp:', true);
+    if(!list || !list.keys) return;
+    let totalGuests = 0;
+    const rows = [];
+    for(const k of list.keys){
+      try{
+        const res = await window.storage.get(k, true);
+        if(res && res.value){
+          const d = JSON.parse(res.value);
+          totalGuests += d.guests || 0;
+          rows.push(d);
+        }
+      }catch(_){}
+    }
+    rows.sort((a,b)=> new Date(b.ts) - new Date(a.ts));
+    document.getElementById('statResponses').textContent = rows.length;
+    document.getElementById('statGuests').textContent = totalGuests;
+    document.getElementById('adminTableBody').innerHTML = rows.map(r=>{
+      const dt = new Date(r.ts);
+      return `<tr><td>${r.name}</td><td>${r.guests}</td><td>${r.note || '—'}</td><td>${dt.toLocaleString('kk-KZ')}</td></tr>`;
+    }).join('');
+  }catch(err){
+    console.error('Admin load error', err);
+  }
+}
+loadAdmin();
+</script>
+</body>
+</html>
